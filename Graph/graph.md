@@ -1,6 +1,6 @@
 
 ### M 797 所有可能的路径（DAG有向无环图）
-##### 记忆化递归，每一步都记录下来（已走路径）# 深度优先遍历
+##### 1. 记忆化递归，每一步都记录下来（已走路径）# 深度优先遍历
 ```python
 class Solution:
     def allPathsSourceTarget(self, graph: List[List[int]]) -> List[List[int]]:
@@ -20,7 +20,7 @@ class Solution:
 			return ans
 		return def(0)
 ```
-##### BFS # 广度优先遍历（层次遍历）
+##### 2. BFS # 广度优先遍历（层次遍历）
 ```python
 class Solution:
     def allPathsSourceTarget(self, graph: List[List[int]]) -> List[List[int]]:
