@@ -23,3 +23,7 @@ def Sumroot(self,root):
 	return  leftsum+rightsum+val # 返回以当前节点为根节点的树的值之和
 ```
 返回的是root的值之和
+##### 还有个重要的点就是！ 
+① 明确当前节点的任务
+② 进入递归，相信他，不要跳入循环
+③ 明确跳出循环条件
