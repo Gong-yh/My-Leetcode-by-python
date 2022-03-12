@@ -1,1 +1,11 @@
-
+# Tree总结
+### 遍历
+关于树主要是遍历中的递归与迭代问题，以及顺序问题
+```
+def traverse(self,root):
+    #前序遍历位置
+    traverse(root.left)
+    #中序遍历位置
+    #traverse(root.right)
+    #后续遍历位置
+```
