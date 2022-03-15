@@ -126,6 +126,57 @@ class Solution:
         return True
 ```
 
+# M 210 课程表Ⅱ
+```python
+from collections import deque
+class Solution:
+    def findOrder(self, numCourses: int, prerequisites: List[List[int]]) -> List[int]:
+        # """
+        # 用一个数组记录深度优先遍历顺序
+        ## 这里理解错了，不能深度优先遍历，广度优先才是题目的思路
+        # """
+        # adjective = [[] for _ in range(numCourses)]
+        # for cur,pre in prerequisites:
+        #     adjective[pre].append(cur)
+        # path = deque()
+        # path.append(0)
+        # pathlist = []
+        # while path:
+        #     cur = path.popleft()
+        #     pathlist.append(cur)
+        #     for nex in adjective[cur]:
+        #         if nex in pathlist:return []
+        #         path.append(nex)
+        # return pathlist
+
+        """
+        用广度优先遍历，并记录走过的点
+        """
+        if numCourses == 0 :
+            return []
+        adjective = [[] for _ in range(numCourses)]
+        indegree = [0 for _ in range(numCourses)]
+        path = []
+        pathlist = []
+        for cur,pre in prerequisites:
+            adjective[pre].append(cur)
+            indegree[cur]+=1
+        for cur in range(numCourses):
+            if indegree[cur] == 0:
+                path.append(cur)
+        while path:
+            top = path.pop(0)
+            pathlist.append(top)
+
+            for nex in adjective[top]:
+                indegree[nex] -= 1
+                if indegree[nex] == 0:
+                    path.append(nex)
+        if len(pathlist) != numCourses:
+            return []
+        return pathlist
+```
+
 
 ###### 参考 [labuladong的leetcode的图部分的一个讲解，还挺有用的](https://labuladong.gitee.io/algo/2/20/36/)
 
