@@ -283,5 +283,5 @@ class Solution:
                 dfs(graph, i)
         return self.res
 ```
-###### 参考 [labuladong的leetcode的图部分的一个讲解，还挺有用的](https://labuladong.gitee.io/algo/2/20/36/)
+# 参考 [labuladong的leetcode的图部分的一个讲解，还挺有用的](https://labuladong.gitee.io/algo/2/20/36/)
 
