@@ -1,6 +1,6 @@
 
-### M 797 所有可能的路径（DAG有向无环图）
-##### 1. 记忆化递归，每一步都记录下来（已走路径）# 深度优先遍历
+# M 797 所有可能的路径（DAG有向无环图）
+### 1. 记忆化递归，每一步都记录下来（已走路径）# 深度优先遍历
 ```python
 class Solution:
     def allPathsSourceTarget(self, graph: List[List[int]]) -> List[List[int]]:
@@ -20,7 +20,7 @@ class Solution:
 			return ans
 		return def(0)
 ```
-##### 2. BFS # 广度优先遍历（层次遍历）
+### 2. BFS # 广度优先遍历（层次遍历）
 ```python
 class Solution:
     def allPathsSourceTarget(self, graph: List[List[int]]) -> List[List[int]]:
@@ -177,6 +177,61 @@ class Solution:
         return pathlist
 ```
 
+# 785 判断二分图：
+### 1. 广度优先遍历
+```python
+from collections import deque   #pycharm不在这导包直接用collections.deque会报错不知为何
+class Solution:
+    def isBipartite(self, graph: List[List[int]]) -> bool: 
+        # 广度优先遍历
+        #color[i]标记i结点状态，0为未着色，1为着红色，-1为着蓝色
+        color = [0 for _ in range(len(graph))]
+        for i in range(len(graph)):
+            #如果当前顶点未着色，以当前点为起始点bfs对当前连通图着色，起始点着红色
+            if color[i] == 0:
+                #对当前联通图顶点涂红色并入队
+                color[i] = 1
+                queue = deque()
+                queue.append(i)
+                #从当前顶点i开始bfs搜索当前连通图
+                while queue:
+                    cur = queue.popleft()
+                    #注意是取cur的颜色而不是i的颜色！！！！！！写错了导致彻底错误还不好检查
+                    col = color[cur]
+                    #遍历当前顶点的所有邻居顶点       
+                    for neighbor in graph[cur]:
+                        #如果当前邻居顶点颜色与当前顶点相同，说明不是二分图，直接return False
+                        if color[neighbor] == col:
+                            return False
+                        #如果当前邻居顶点颜色与当前顶点相反，说明当前邻居顶点已经入队过了，无需重复操作
+                        elif color[neighbor] == -col:
+                            continue
+                        #如果当前邻居顶点未着色，着色为当前顶点相反颜色并入队以便后续搜索当前邻居顶点的邻居顶点
+                        else:
+                            color[neighbor] = -col
+                            queue.append(neighbor)
+        #所有顶点都着色完毕还没有发现相邻顶点颜色相同，说明是二分图
+        return True
 
+```
+ ###  2. 深度优先遍历
+ ```python
+        vis = [0] * len(graph)
+        def dfs(pos, color):
+            vis[pos] = color
+            for i in graph[pos]:
+                # 颜色相同 or （未访问 且 继续深搜为False）
+                # 可直接返回False
+                if vis[i] == color or not (vis[i] or dfs(i, -color)):
+                    return False
+            return True
+
+        # 不一定为联通图，需遍历每一个节点
+        for i in range(len(graph)):
+            if not vis[i] and not dfs(i, 1):
+                return False
+        return True
+···
+```
 ###### 参考 [labuladong的leetcode的图部分的一个讲解，还挺有用的](https://labuladong.gitee.io/algo/2/20/36/)
 
