@@ -177,7 +177,7 @@ class Solution:
         return pathlist
 ```
 
-# 785 判断二分图：
+# M 785 判断二分图：
 ### 1. 广度优先遍历
 ```python
 from collections import deque   #pycharm不在这导包直接用collections.deque会报错不知为何
@@ -214,7 +214,9 @@ class Solution:
         return True
 
 ```
- ###  2. 深度优先遍历
+
+ 
+###  2. 深度优先遍历
  ```python
         vis = [0] * len(graph)
         def dfs(pos, color):
@@ -231,7 +233,55 @@ class Solution:
             if not vis[i] and not dfs(i, 1):
                 return False
         return True
-···
+```
+
+# M 886 可能的二分法
+```python
+# class Solution:
+#     def possibleBipartition(self, n: int, dislikes: List[List[int]]) -> bool:
+#         # 又是标色法吗
+#         # 将两个分入不同组
+#         #3  [[1,2],[1,3],[2,3]] 输出T 应该为F
+#         list1 = []
+#         list2 = []
+#         for i in range(len(dislikes)):
+#             k = dislikes[i][0]
+#             v = dislikes[i][1]
+#             if (k and v ) in list1 or (k and v ) in list2:
+#                 return False 
+#             if k in list1:
+#                 list2.append(v) 
+#             if k in list2:
+#                 list1.append(v)
+#         return True
+
+class Solution:
+    def possibleBipartition(self, n: int, dislikes: List[List[int]]) -> bool:
+        visited = set()
+        partition = [1] * (n+1)
+        self.res = True
+        def dfs(graph, idx):
+            if self.res == False: return 
+            visited.add(idx)
+            for p in graph[idx]:
+                if p not in visited:
+                    partition[p] = -partition[idx]
+                    dfs(graph, p)
+                else:
+                    if partition[p] != -partition[idx]:
+                        self.res = False
+        # construct the graph
+        graph =[ []for _ in range(n+1)]
+        for pair in dislikes:
+            p1 = pair[0]
+            p2 = pair[1]
+            # non-directed graph v->w and w->v
+            graph[p1].append(p2)
+            graph[p2].append(p1)
+        for i in range(1, n+1):
+            if i not in visited:
+                dfs(graph, i)
+        return self.res
 ```
 ###### 参考 [labuladong的leetcode的图部分的一个讲解，还挺有用的](https://labuladong.gitee.io/algo/2/20/36/)
 
