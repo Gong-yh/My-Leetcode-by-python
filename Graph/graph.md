@@ -283,5 +283,117 @@ class Solution:
                 dfs(graph, i)
         return self.res
 ```
+
+# M130 被围绕的区域 （并查集）问题
+##### 错误思路
+```python
+class Solution:
+    def solve(self, board: List[List[str]]) -> None:
+        """
+        Do not return anything, modify board in-place instead.
+        题目要求为，给定举证，找到呗所有x包围的区域，并将被包围内容用X填充【包围的定义为四周包围】
+        """
+        # 找特例，先标记边缘为0的，然后全部变为x，再把边缘还原
+		# [["X","X","X","X"],["X","O","O","X"],["X","X","O","X"],["X","O","O","X"]]不行
+        n = len(board)
+        for i,Listi in enumerate(board):
+            if i == 0 or i == n-1:# 如果上下有O，替换为B
+                if 'O' in Listi:
+                    print(Listi)
+                    board[i] = ['B' if aa == 'O' else aa for aa in Listi]
+            elif 'O' in Listi:
+                if Listi[0]=='O':
+                    Listi[0] == 'B'
+                if Listi[-1]=='O':
+                    Listi[-1] == 'B'
+                board[i] = ['X' if aa == 'O' else aa for aa in Listi]
+        for i,B in enumerate(board):
+            board[i] = ['O' if aa == 'B' else aa for aa in B]
+        print(board)
+        return board
+```
+### DFS
+```python
+class Solution:
+    def solve(self, board: List[List[str]]) -> None:
+        if not board:return
+        n , m = len(board) , len(board[0]) # 竖宽 ， 横宽
+        def dfs(x,y):
+            # 深度递归的目的是什么：找团，如果不在边缘就标记：
+            if not 0<= x < n or not 0<= y < m or board[x][y] != 'O':
+                # 不考虑边缘上的O
+                # 搜到边缘了/搜到有X的了，返回，不然还是自己
+                return
+            board[x][y] = 'B'
+            dfs(x+1,y)
+            dfs(x,y+1)
+            dfs(x-1,y)
+            dfs(x,y-1)
+        # 行 找列
+        for i in range(n):
+            dfs(i,0)
+            dfs(i,m-1)
+        # 列 找行
+        for i in range(m-1):
+            dfs(0,i)
+            dfs(n-1,i)
+        print(board)
+        # 标记完成
+        for i in range(n):
+            for j in range(m):
+                if board[i][j] == 'B':
+                    board[i][j] = 'O'
+                elif board[i][j] == 'O':
+                    board[i][j] = 'X'
+```
+
+### BFS 
+```python
+class Solution:
+    def solve(self, board: List[List[str]]) -> None:
+        """
+        Do not return anything, modify board in-place instead.
+        """
+        if not board or not board[0]:
+            return
+        row = len(board)
+        col = len(board[0])
+
+        def bfs(i, j):
+            from collections import deque
+            queue = deque()
+            queue.appendleft((i, j))
+            while queue:
+                i, j = queue.pop()
+                if 0 <= i < row and 0 <= j < col and board[i][j] == "O":
+                    board[i][j] = "B"
+                    for x, y in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
+                        queue.appendleft((i + x, j + y))
+
+        for j in range(col):
+            # 第一行
+            if board[0][j] == "O":
+                bfs(0, j)
+            # 最后一行
+            if board[row - 1][j] == "O":
+                bfs(row - 1, j)
+
+        for i in range(row):
+
+            if board[i][0] == "O":
+                bfs(i, 0)
+            if board[i][col - 1] == "O":
+                bfs(i, col - 1)
+
+        for i in range(row):
+            for j in range(col):
+                if board[i][j] == "O":
+                    board[i][j] = "X"
+                if board[i][j] == "B":
+                    board[i][j] = "O"
+
+```
+
+
 # 参考 [labuladong的leetcode的图部分的一个讲解，还挺有用的](https://labuladong.gitee.io/algo/2/20/36/)
 
