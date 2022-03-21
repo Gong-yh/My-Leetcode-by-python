@@ -20,7 +20,7 @@ class Solution:
 			return ans
 		return def(0)
 ```
-### 2. BFS # 广度优先遍历（层次遍历）
+### 2. BFS  广度优先遍历（层次遍历）
 ```python
 class Solution:
     def allPathsSourceTarget(self, graph: List[List[int]]) -> List[List[int]]:
