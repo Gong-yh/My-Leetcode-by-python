@@ -394,6 +394,42 @@ class Solution:
 
 ```
 
+# M 990 等式方程的可满足性 
+### 查并集
+```python
+class Solution:
+    class UnionFind:
+        def __init__(self):
+            self.parent = list(range(26))# 只知道是26个字母中的，不知道具体有哪些，有多少字母
+
+        def find(self, index):
+            # 找父节点
+            if index == self.parent[index]:
+                return index
+            self.parent[index] = self.find(self.parent[index])
+            return self.parent[index]
+
+        def union(self, index1, index2):
+            # 将随机一个父节点作为另一个父节点的父节点
+            self.parent[self.find(index1)] = self.find(index2)
+
+    def equationsPossible(self, equations: List[str]) -> bool:
+        uf = Solution.UnionFind()
+
+        for st in equations:
+            if st[1] == '=':
+                index1 = ord(st[0]) - ord("a")# ord()返回值是对应的十进制整数 
+                index2 = ord(st[3]) - ord("a")
+                uf.union(index1, index2)  # 连通两节点的父节点
+
+        for st in equations:
+            if st[1] == "!":
+                index1 = ord(st[0]) - ord("a")
+                index2 = ord(st[3]) - ord("a")
+                if uf.find(index1) == uf.find(index2): # 如果父节点为一个，但是有不能连通，返回false
+                    return False
+        return True
+```
 
 # 参考 [labuladong的leetcode的图部分的一个讲解，还挺有用的](https://labuladong.gitee.io/algo/2/20/36/)
 
