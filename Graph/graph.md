@@ -430,6 +430,138 @@ class Solution:
                     return False
         return True
 ```
+# 最小生成树 MST
+## 原理篇：
+### Kruskal 算法
+	每一步都优先选择，最小的边
+	1. 计算所有边，并放入列表中
+	2. 依据边从小到大的顺序，给边排序
+	3. 回添：
+				从列表中，按照从小到大的顺序取出边，并判断现有图中，是否存在环
+					【存在，下一条||不存在，添加】
+					直到选择了N-1条边，退出循环
+#### M 1584 连接所有点的最小费用
+```python 
+# class Solution:
+#     def __init__(self):
+#         self.summin = 0
+#     def minCostConnectPoints(self, points: List[List[int]]) -> int:
+#         #首先，先得计算点和点之间的距离，如果用穷举u，是不是太复杂
+#         Distances = [[] for _ in range(len(points)) ]
+#         print(len(Distances))
+#         visited = []
+#         # 创建个数组记录（parent，path(已经走过的最短距离)）
+#         Tree = [[] for _ in range(len(points))]
+#         # def getMdistance(p1,p2):
+#         #     Distances[p1][p2] = abs(p1[0]-p2[0]) + abs(p1[1]-p2[1])
+#         for i in range(len(points)):
+#             now = points[i]
+#             for j in range(len(points)):
+#                 if i == j :
+#                     Distances[i].append(0)
+#                 else:
+#                     nex = points[j]
+#                     Distances[i].append(abs(now[0]-nex[0]) + abs(now[1]-nex[1]))
+
+#         # def MinTree(p1): # 错了，这样找出来，只能保证和之前的最短，可能和以后的连接中，有比和之前的更短的
+#         #     if p1 in visited: return
+#         #     # 去visited里面找parent
+#         #     nab = Distances[p1]
+#         #     # print(nab)
+#         #     if visited == []:
+#         #         visited.append(p1)
+#         #         return
+#         #     mindis = min(nab[i] for i in visited)
+#         #     parent = nab.index(mindis)
+#         #     Tree[p1].append(parent)
+#         #     self.summin += mindis
+#         #     Tree[p1].append(self.summin)
+#         #     visited.append(p1)
+
+#         # # # 已经得到所有距离
+#         # Tree[0].append(0)
+#         # Tree[0].append(0)
+#         # # visited.append(0)
+#         # print(Distances)
+#         # # summin = 0
+#         # for i in range(len(points)):
+#         #     print(i)
+#         #     MinTree(i)
+#         #     print(visited)
+#         #     print(Tree)
+#         # # 怎么找到最小呢？
+#         # Minpath = Tree[visited[-1]][1]
+#         # return Minpath
+
+#         # 用 Kruskal
+#         # 先给每条边的路径排序：
+#         # 问题来了，怎么记录呢？（p1,p2）
+#         # 再定义一个list（list）
+#         SortedDis = [sorted(i) for i in Distances]
+#         def Kruskal():
+#             for dis in SortedDis[p1]:
+#                 p2 = Distances[p1].index(dis)
+#                 if 存在循环 or dis == 0:
+#                     # 已经访问过了，下一个
+#                     continue
+#                 else :
+#                     self.summin += dis
+#                     visited.append(p2)
+
+class Solution:
+    def minCostConnectPoints(self, points: List[List[int]]) -> int:
+        arr=[]
+        n=len(points)
+        # 构建边
+        for i in range(n):
+            x1,y1=points[i]
+            for j in range(i+1,n):
+                x2,y2=points[j]
+                arr.append([i,j,abs(x2-x1)+abs(y2-y1)])
+        # 排序
+        arr.sort(key=lambda x:x[2])
+        # 并查集
+        parent=list(range(n))
+        def find(x):
+            if x!=parent[x]:
+                parent[x]=find(parent[x])
+            return parent[x]
+        # 构建最小生成树
+        edge=0
+        cost=0
+        for i,j,d in arr:
+            a,b=find(i),find(j)
+            if a!=b:
+                parent[b]=a
+                edge+=1
+                cost+=d
+            if edge==n-1:
+                break
+        return cost
+
+```
+
+###  Prim算法
+	从顶点出发，间接选择与顶点相连，最小的边
+		优先选择，连接两个顶点集合【已选顶点集合||未选顶点集合】的所有边中，权值最小的
+		将选好的顶点移入已选顶点集合，移除未选集合
+		通过更新三个列表信息：
+			1. selected 顶点是否被选取【T/F】
+			2. mindist  某时刻，连接已选顶点集合到该顶点的所有边中，权重最小的那条边的权重大小
+			3. parent  最小权值边，两端顶点信息
+		当已选顶点集合中，每加入一个新的顶点，更新与其相连顶点的列表信息
+				1. 如果该相邻点与其相连的边，小于已有的mindist，则将其parent该为这给新加入的节点，         并将mindist更新为两节点的连接值
+				2. 扫描mindist列表，找到最小值所对应的顶点
+				3. 将2. 对应的顶点，添加到已选节点，并将其父亲列表更新
+				4. 以该顶点为新顶点，重复
+				5. 直到所有节点都被选中，退出循环
+
+#### M 1584 连接所有点的最小费用
+```python 
+
+```
+
+
 
 # 参考 [labuladong的leetcode的图部分的一个讲解，还挺有用的](https://labuladong.gitee.io/algo/2/20/36/)
 
